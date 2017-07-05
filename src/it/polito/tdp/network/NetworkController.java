@@ -146,7 +146,7 @@ public class NetworkController {
 	        			if(model.getNeighbours(stemp).size()!= 0){
 	        				txtResult.appendText("Neighbours of the specified store: \n");
 			        			for(Store a : model.getNeighbours(stemp))
-			        				txtResult.appendText(a.toString()+"\n");
+			        				txtResult.appendText(a.toString());
 	        			} else {
 	        				txtResult.appendText("This is the only store in the city\n");
 	        			}
@@ -193,7 +193,7 @@ public class NetworkController {
     	List<Store> stores= new ArrayList<Store>(model.getStoresForRegion(region));
 	    
 	    	for(Store stemp: stores)
-		    		txtResult.appendText(stemp.toString()+"\n");  
+		    		txtResult.appendText(stemp.toString());  
 	    System.out.println(model.getDistrinctForRegion(region));
 	    
     }
@@ -213,7 +213,7 @@ public class NetworkController {
     	List<Store> stores= new ArrayList<Store>(model.getStoresForCity(city_name));
     	if(stores.size()!=0){		
 	    	for(Store stemp: stores)
-		    		txtResult.appendText(stemp.toString()+"\n"); 
+		    		txtResult.appendText(stemp.toString()); 
 	     } else 
 	    	 txtResult.appendText("There are not shops in the city selected\n");
 	   

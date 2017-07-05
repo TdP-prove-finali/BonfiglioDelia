@@ -131,7 +131,7 @@
                      <graphic>
                         <ImageView fitHeight="31.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../../../local-search-seo.jpg" />
+                              <Image url="@../../../../../punti_vendita.jpg" />
                            </image>
                         </ImageView>
                      </graphic>
