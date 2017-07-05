@@ -8,7 +8,6 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import it.polito.tdp.network.dao.NetworkDAO;
 
-
 public class Model {
 	private double turnover;
 	private List<City> cities;
