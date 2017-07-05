@@ -29,7 +29,7 @@ public class NetworkDAO {
 				regions.add(rs.getString("region"));
 			}	
 			
-			System.out.println(regions.toString());
+			//System.out.println(regions.toString());
 			conn.close();
 			return regions;
 
@@ -130,7 +130,7 @@ public class NetworkDAO {
 				}
 				stores.add(stemp);
 			}
-			System.out.println(stores.size());
+			//System.out.println(stores.size());
 			conn.close();
 			return stores;
 
@@ -291,7 +291,7 @@ public class NetworkDAO {
 		try {
 			Connection conn = DBConnect.getConnection();
 			PreparedStatement st = conn.prepareStatement(sql);
-			System.out.println(s.getCity_name());
+			//System.out.println(s.getCity_name());
 			
 			st.setString(1, s.getCity_name());
 			st.setString(2, s.getId_istat());
@@ -351,28 +351,30 @@ public class NetworkDAO {
 		}
 	}
 
-	public List<Double> getStoreKpi(TextField id_pvd, LocalDate ld5) {
-		final String sql = "select sum(fatt_products) as fp, sum(fatt_services) as fs, sum(fatt_accessories)as fa, sum(fatt_ricariche) as fr "+
-				"from economics	"+
-				"where data = ? ";
+	public List<Double> getStoreKpi(String id_pvd, LocalDate ld5) {
+		final String sql = "select e.fatt_products as fp, e.fatt_services as fs, e.fatt_accessories as fa, e.fatt_ricariche as fr "+
+							"from economics	as e "+
+							"where e.id_pvd= ? and e.`data` = ? ";
 
 		List<Double> kpi = new ArrayList<Double>() ;
 		
 		try {
 		Connection conn = DBConnect.getConnection();
 		PreparedStatement st = conn.prepareStatement(sql);
-		st.setDate(1, Date.valueOf(ld5));
+		st.setString(1, id_pvd);
+		st.setDate(2, Date.valueOf(ld5));
 		
 		ResultSet rs = st.executeQuery();
 		
-		rs.next();
+		if(rs.next()){
 		
 			kpi.add(rs.getDouble("fp"));
 			kpi.add(rs.getDouble("fs"));
 			kpi.add(rs.getDouble("fa"));
 			kpi.add(rs.getDouble("fr"));
+		}
 		
-		
+		//System.out.println(kpi.toString());
 		conn.close();
 		
 		return kpi ;
@@ -384,7 +386,8 @@ public class NetworkDAO {
 		}
 
 	public List<Double> getAvgKpi(LocalDate ld) {
-		final String sql = "select sum(fatt_products) as fp, sum(fatt_services) as fs, sum(fatt_accessories)as fa, sum(fatt_ricariche) as fr "+
+		final String sql = 
+				"select avg(fatt_products) as afp, avg(fatt_services) as afs, avg(fatt_accessories)as afa, avg(fatt_ricariche) as afr "+
 				"from economics	"+
 				"where data = ? ";
 
@@ -399,10 +402,10 @@ public class NetworkDAO {
 		
 		rs.next();
 		
-			kpi.add(rs.getDouble("fp"));
-			kpi.add(rs.getDouble("fs"));
-			kpi.add(rs.getDouble("fa"));
-			kpi.add(rs.getDouble("fr"));
+			kpi.add(rs.getDouble("afp"));
+			kpi.add(rs.getDouble("afs"));
+			kpi.add(rs.getDouble("afa"));
+			kpi.add(rs.getDouble("afr"));
 		
 		
 		conn.close();
@@ -411,6 +414,101 @@ public class NetworkDAO {
 		
 		} catch (SQLException e) {
 		e.printStackTrace();
+		throw new RuntimeException("Errore Db");
+		}
+		}
+
+	public double getFattProdForRegion(String provincia, LocalDate ld) {
+		final String sql = "select sum(fatt_products) as fp "+
+							"from economics	as e "+
+							"where e.`data`=? and e.id_pvd in ( 	select n.id_pvd "+
+																"from network as n, cities as c "+
+																"where n.id_istat=c.id_istat and c.district_name= ? "+
+															")";
+
+			double fatt_prod = 0.0;
+			
+			try {
+			Connection conn = DBConnect.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setDate(1, Date.valueOf(ld));
+			st.setString(2, provincia);
+			
+			ResultSet rs = st.executeQuery();
+			
+			rs.next();
+			
+				fatt_prod= rs.getDouble("fp");			
+				//System.out.println(fatt_prod);
+			conn.close();
+			
+			return fatt_prod ;
+			
+			} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Errore Db");
+			}
+			}
+
+	public List<Store> getStoresForDistrinct(String provincia, StoreIdMap storeIdMap) {
+		final String sql = "select n.*"+
+				"from network as n, cities as c "+
+				"where c.id_istat=n.id_istat and c.district_name= ?";
+
+		List<Store> stores= new ArrayList<Store>();
+
+		try {
+		Connection conn = DBConnect.getConnection();
+		PreparedStatement st = conn.prepareStatement(sql);
+		st.setString(1, provincia);
+		
+		ResultSet rs = st.executeQuery();
+		
+		while (rs.next()) {
+			Store stemp = storeIdMap.get(rs.getString("id_pvd"));
+			
+			if(stemp ==null){
+				stemp = new Store(rs.getString("id_pvd"), rs.getString("rag_social"), rs.getString("iva"),
+						rs.getString("city").toUpperCase(), rs.getString("id_istat"),rs.getString("address"), rs.getString("comm_state")); 
+			
+				stemp = storeIdMap.put(stemp);
+			}
+			stores.add(stemp);
+		}
+		//System.out.println(stores.size());
+		conn.close();
+		return stores;
+		
+		} catch (SQLException e) {
+		 e.printStackTrace();
+		throw new RuntimeException("Errore Db");
+		}
+		}
+
+	public List<String> getDistrinctForRegion(String region) {
+		final String sql = "select distinct c.district_name as provincia "+
+							"from cities as c "+
+							"where c.region = ? "+ 
+							"order by provincia ";
+
+		List<String> result= new ArrayList<String>();
+
+		try {
+		Connection conn = DBConnect.getConnection();
+		PreparedStatement st = conn.prepareStatement(sql);
+		st.setString(1, region);
+		
+		ResultSet rs = st.executeQuery();
+		
+		while (rs.next()) {
+			result.add(rs.getString("provincia"));
+		}
+		//System.out.println(stores.size());
+		conn.close();
+		return result;
+		
+		} catch (SQLException e) {
+		 e.printStackTrace();
 		throw new RuntimeException("Errore Db");
 		}
 		}

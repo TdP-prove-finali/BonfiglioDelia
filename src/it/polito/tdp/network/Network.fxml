@@ -46,7 +46,22 @@
                   </Button>
                   <Button fx:id="btnKpi" mnemonicParsing="false" onAction="#doKPIGraph" text="KPIGraph">
                      <HBox.margin>
-                        <Insets left="50.0" top="10.0" />
+                        <Insets left="60.0" top="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <ComboBox fx:id="boxDistrinct" promptText="Select a district">
+                     <HBox.margin>
+                        <Insets left="100.0" top="10.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <TextField fx:id="txtTurnover" promptText="Turnover you deserve">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="90.0" right="20.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="btnCalculate" mnemonicParsing="false" onAction="#doCalculate" text="Calculate">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
                      </HBox.margin>
                   </Button>
                </children>

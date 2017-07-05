@@ -11,9 +11,11 @@ import it.polito.tdp.network.dao.NetworkDAO;
 import it.polito.tdp.network.model.City;
 import it.polito.tdp.network.model.Model;
 import it.polito.tdp.network.model.Store;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
@@ -27,6 +29,14 @@ import javafx.scene.chart.XYChart;
 
 public class NetworkController {
 	private Model model;
+    @FXML // fx:id="boxDistrinct"
+    private ComboBox<String> boxDistrinct; // Value injected by FXMLLoader
+    
+	@FXML // fx:id="txtTurnover"
+    private TextField txtTurnover; // Value injected by FXMLLoader
+    
+    @FXML // fx:id="btnCalculate"
+    private Button btnCalculate; // Value injected by FXMLLoader
 
     @FXML
     private ComboBox<Integer> boxMonth;
@@ -184,6 +194,7 @@ public class NetworkController {
 	    
 	    	for(Store stemp: stores)
 		    		txtResult.appendText(stemp.toString()+"\n");  
+	    System.out.println(model.getDistrinctForRegion(region));
 	    
     }
 
@@ -302,7 +313,8 @@ public class NetworkController {
 
     @FXML
     void doKPIGraph(ActionEvent event) {
-    	
+    	kpiStoreChart.getData().clear();
+
     	final String kpip = "products";
         final String kpis = "services";
         final String kpia = "accessories";
@@ -375,45 +387,133 @@ public class NetworkController {
     }
     @FXML
     void doStoreKpi(ActionEvent event) {
+    	kpiStoreChart.getData().clear();
+    	
+    	if(boxMonth.getValue()== null){
+    		txtResult.clear();
+    		txtResult.appendText("Please select a month from the combobox.\n");
+    		return;
+    	}
     	int mese = boxMonth.getValue();
     	
     	NetworkDAO dao = new NetworkDAO();
     	XYChart.Series<String, Double> setMonth = new XYChart.Series<>();
-    	LocalDate ld =  LocalDate.of(2017, 06, 01);
+    	LocalDate ld =  LocalDate.of(2017, mese+1, 01);
     	
     	List<Double> kpiMonth = dao.getAvgKpi(ld);
-
+    	//System.out.println(kpiMonth.toString());
+    	
     	setMonth.getData().add(new XYChart.Data<String,Double>("products", kpiMonth.get(0)));
     	setMonth.getData().add(new XYChart.Data<String,Double>("services", kpiMonth.get(1)));
     	setMonth.getData().add(new XYChart.Data<String,Double>("accessories", kpiMonth.get(2)));
     	setMonth.getData().add(new XYChart.Data<String,Double>("recharges", kpiMonth.get(3)));
     	
     	setMonth.setName("Month "+mese);
-    	kpiStoreChart.autosize();
     	kpiStoreChart.getData().add(setMonth);
     	
-    	
-    	XYChart.Series<String, Double> setStore = new XYChart.Series<>();
-    	LocalDate ld5 =  LocalDate.of(2017, 06, 01);
-    	
-    	List<Double> kpi5 = dao.getStoreKpi(id_pvd, ld5);
+    	XYChart.Series<String, Double> setStore = new XYChart.Series<>();   	
+    	List<Double> kpis = dao.getStoreKpi(id_pvd.getText(), ld);
 
-    	setStore.getData().add(new XYChart.Data<String,Double>("products", kpi5.get(0)));
-    	setStore.getData().add(new XYChart.Data<String,Double>("services", kpi5.get(1)));
-    	setStore.getData().add(new XYChart.Data<String,Double>("accessories", kpi5.get(2)));
-    	setStore.getData().add(new XYChart.Data<String,Double>("recharges", kpi5.get(3)));
+    	setStore.getData().add(new XYChart.Data<String,Double>("products", kpis.get(0)));
+    	setStore.getData().add(new XYChart.Data<String,Double>("services", kpis.get(1)));
+    	setStore.getData().add(new XYChart.Data<String,Double>("accessories", kpis.get(2)));
+    	setStore.getData().add(new XYChart.Data<String,Double>("recharges", kpis.get(3)));
     	
     	setStore.setName(txtbrand.getText());
-    	kpiStoreChart.autosize();
     	kpiStoreChart.getData().add(setStore);
-
     }
+    
+    @FXML
+    void doCalculate(ActionEvent event) {
+    	String turnover= txtTurnover.getText();
+    	//BOX CON LE PROVINCIE DELLA REGIONE SCELTA
+    	
+    	String region = boxRegion.getValue();
+    	
+    	String provincia = boxDistrinct.getValue();
+    	
+    	if(region == null || provincia ==null){
+    		txtResult.clear();
+    		txtResult.appendText("Select a region and a district please.\n");
+    		return;
+    	}
+    	
+    	try{
+    		txtResult.clear();
+    		double t= Double.parseDouble(turnover);
+    		model.setProvincia(provincia);
+    		model.setTurnover(t);
+    		
+    		List<Store> list= model.getOrderedListOfStores();
+    		if(list.size()==0){
+    			txtResult.appendText("This distrinct doesn't have enough store.\n");
+    			return;
+    		}
+    		
+    		double max =0.0;
+			for(Store s: list){
+				max += s.getFatt_prod();
+			}
+			
+			double min = list.get(0).getFatt_prod();
+			if(min <=0.0){
+				min = list.get(1).getFatt_prod();
+			}
+			
+			System.out.println(min+" "+max);
+    		//controllo che il turnover inserito sia maggiore del'eff minima di un negozio e min del max possibile    		
+    		
+    		if(t >= min && t <= max ){
+    		//chiamo ricorsione
+	   		
+    		Set<Store> m = model.solve();
+    		txtResult.appendText("The best stores are: "+m.size()+"\n");
+    		double eff =0.0;
+    		
+    		for(Store s: m){
+    			txtResult.appendText(s.toString());
+    			eff += s.getFatt_prod();   					
+    		}
+    		
+    			txtResult.appendText("The max turnover is: "+eff+"\n"); 
+    		} 
+    		
+    		else if(t < min) {
+    			
+    			txtResult.appendText("Please select a turnover bigger than "+min+"\n");
+    		
+    		} else {
+        		//se il turnover è > del fatt max prendi tutti i negozi della regione
+    			txtResult.appendText("You have to consider all the stores, because the turnover deserved is bigger than what you can reach.\n");
+    			txtResult.appendText("The best stores are: "+list.size()+"\n");
+        		double eff =0.0;
+        		
+        		for(Store s: list){
+        			eff += s.getFatt_prod();    					
+        		}
+        		txtResult.appendText("The max turnover is: "+eff+"\n");    			
+    		}
+    			
+    		
+    		
+    	}catch(NumberFormatException e){
+    		e.printStackTrace();
+    		txtResult.clear();
+    		txtResult.appendText("Please insert the turnover only with digits.\n");
+    		return;
+    	}
+    	
+    }
+    
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert boxRegion != null : "fx:id=\"boxRegion\" was not injected: check your FXML file 'Network.fxml'.";
+    	assert boxDistrinct != null : "fx:id=\"boxDistrinct\" was not injected: check your FXML file 'Network.fxml'.";
+    	assert boxRegion != null : "fx:id=\"boxRegion\" was not injected: check your FXML file 'Network.fxml'.";
         assert btnSearchStore != null : "fx:id=\"btnSearchStore\" was not injected: check your FXML file 'Network.fxml'.";
         assert btnKpi != null : "fx:id=\"btnKpi\" was not injected: check your FXML file 'Network.fxml'.";
+        assert txtTurnover != null : "fx:id=\"txtTurnover\" was not injected: check your FXML file 'Network.fxml'.";
+        assert btnCalculate != null : "fx:id=\"btnCalculate\" was not injected: check your FXML file 'Network.fxml'.";
         assert txtCityName != null : "fx:id=\"txtCityName\" was not injected: check your FXML file 'Network.fxml'.";
         assert btnStoreIn != null : "fx:id=\"btnStoreIn\" was not injected: check your FXML file 'Network.fxml'.";
         assert txtDistrict != null : "fx:id=\"txtDistrict\" was not injected: check your FXML file 'Network.fxml'.";
@@ -424,6 +524,7 @@ public class NetworkController {
         assert btnCompleteStore != null : "fx:id=\"btnCompleteStore\" was not injected: check your FXML file 'Network.fxml'.";
         assert btnInsert != null : "fx:id=\"btnInsert\" was not injected: check your FXML file 'Network.fxml'.";
         assert btnDelete != null : "fx:id=\"btnDelete\" was not injected: check your FXML file 'Network.fxml'.";
+        assert boxMonth != null : "fx:id=\"boxMonth\" was not injected: check your FXML file 'Network.fxml'.";
         assert btnStoreKpi != null : "fx:id=\"btnStoreKpi\" was not injected: check your FXML file 'Network.fxml'.";
         assert txtbrand != null : "fx:id=\"txtbrand\" was not injected: check your FXML file 'Network.fxml'.";
         assert txtiva != null : "fx:id=\"txtiva\" was not injected: check your FXML file 'Network.fxml'.";
@@ -432,7 +533,6 @@ public class NetworkController {
         assert kpiStoreChart != null : "fx:id=\"kpiStoreChart\" was not injected: check your FXML file 'Network.fxml'.";
         assert x != null : "fx:id=\"x\" was not injected: check your FXML file 'Network.fxml'.";
         assert y != null : "fx:id=\"y\" was not injected: check your FXML file 'Network.fxml'.";
-        assert boxMonth != null : "fx:id=\"boxMonth\" was not injected: check your FXML file 'Network.fxml'.";
 
     }
 
@@ -442,5 +542,14 @@ public class NetworkController {
 		
 		for(int i =1; i<6; i++)
 			boxMonth.getItems().add(i);
+		
+		boxRegion.valueProperty().addListener(new ChangeListener<String>(
+    			) {
+					@Override
+					public void changed(ObservableValue<? extends String> observable, String oldValue,String newValue) {
+						boxDistrinct.getItems().clear();
+						boxDistrinct.getItems().addAll(model.getDistrinctForRegion(newValue));
+					}
+		});
 	}
 }

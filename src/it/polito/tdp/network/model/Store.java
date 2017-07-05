@@ -1,6 +1,6 @@
 package it.polito.tdp.network.model;
 
-public class Store {
+public class Store implements Comparable<Store>{
 	private String id_pvd;
 	private String rag_social;
 	private String iva;
@@ -8,6 +8,9 @@ public class Store {
 	private String id_istat;
 	private String address;
 	private String commercial_state;
+	
+	private double efficiency_index;
+	private double fatt_prod;
 	
 	public Store(String id_pvd, String rag_social, String iva, String city_name, String id_istat, String address,
 			String commercial_state) {
@@ -19,6 +22,7 @@ public class Store {
 		this.id_istat = id_istat;
 		this.address = address;
 		this.commercial_state = commercial_state;
+		this.efficiency_index=0.0;
 	}
 
 	/**
@@ -158,8 +162,43 @@ public class Store {
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
-		return "Id store: "+id_pvd.trim() + ", Brand: "+rag_social.trim()+ ", Closed to public "+this.getCommercial_state();
+	//public String toString() {
+	//	return "Id store: "+id_pvd.trim() + ", Brand: "+rag_social.trim()+ ", Closed to public "+this.getCommercial_state();
+	//}
+	
+	public String toString(){
+		return "Id store: "+id_pvd+ ", Closed to public "+this.getCommercial_state()+" revenue: "+fatt_prod+"\n";
+	}
+
+	/**
+	 * @return the efficiency_index
+	 */
+	public double getEfficiency_index() {
+		return efficiency_index;
+	}
+
+	/**
+	 * @param efficiency_index the efficiency_index to set
+	 */
+	public void setEfficiency_index(double efficiency_index) {
+		this.efficiency_index = efficiency_index;
+	}
+
+	@Override
+	public int compareTo(Store other) {
+		
+		if(this.efficiency_index<other.efficiency_index )
+			return -1;
+		
+		return 1;
+	}
+
+	public double getFatt_prod() {
+		return fatt_prod;
+	}
+
+	public void setFatt_prod(double fatt_prod) {
+		this.fatt_prod = fatt_prod;
 	}
 	
 	
