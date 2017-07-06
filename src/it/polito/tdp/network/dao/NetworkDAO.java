@@ -453,7 +453,7 @@ public class NetworkDAO {
 	public List<Store> getStoresForDistrinct(String provincia, StoreIdMap storeIdMap) {
 		final String sql = "select n.*"+
 				"from network as n, cities as c "+
-				"where c.id_istat=n.id_istat and c.district_name= ? and n.comm_state<>'no' ";
+				"where c.id_istat=n.id_istat and c.district_name= ? and n.comm_state='no' ";
 
 		List<Store> stores= new ArrayList<Store>();
 		try {
