@@ -234,7 +234,7 @@ public class Model {
 			best.addAll(parziale);
 			
 			return;
-		}
+		}		
 		
 		for(Store stemp: orderedList){
 				//ottimizzo in modo da evitare le permutazioni dei negozi che occupa solo tempo alla ricorsione
