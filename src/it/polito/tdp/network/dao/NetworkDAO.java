@@ -456,7 +456,6 @@ public class NetworkDAO {
 				"where c.id_istat=n.id_istat and c.district_name= ? and n.comm_state<>'no' ";
 
 		List<Store> stores= new ArrayList<Store>();
-
 		try {
 		Connection conn = DBConnect.getConnection();
 		PreparedStatement st = conn.prepareStatement(sql);
