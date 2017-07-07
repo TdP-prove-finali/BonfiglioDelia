@@ -54,9 +54,9 @@
                         <Insets left="100.0" top="10.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <TextField fx:id="txtTurnover" promptText="Turnover you deserve">
+                  <TextField fx:id="txtTurnover" promptText="Revenue you deserve">
                      <HBox.margin>
-                        <Insets bottom="10.0" left="90.0" right="20.0" top="10.0" />
+                        <Insets bottom="10.0" left="60.0" right="20.0" top="10.0" />
                      </HBox.margin>
                   </TextField>
                   <Button fx:id="btnCalculate" mnemonicParsing="false" onAction="#doCalculate" text="Calculate">
@@ -148,7 +148,7 @@
                   </Button>
                   <ComboBox fx:id="boxMonth" visible="false">
                      <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
+                        <Insets bottom="5.0" left="20.0" right="5.0" top="10.0" />
                      </HBox.margin>
                   </ComboBox>
                   <Button fx:id="btnStoreKpi" mnemonicParsing="false" onAction="#doStoreKpi" prefHeight="36.0" prefWidth="79.0" text="Store's KPI" visible="false">

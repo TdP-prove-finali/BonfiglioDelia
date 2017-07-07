@@ -11,7 +11,6 @@ import it.polito.tdp.network.model.City;
 import it.polito.tdp.network.model.CityIdMap;
 import it.polito.tdp.network.model.Store;
 import it.polito.tdp.network.model.StoreIdMap;
-import javafx.scene.control.TextField;
 
 public class NetworkDAO {
 
