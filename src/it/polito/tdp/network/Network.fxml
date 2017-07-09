@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="664.0" prefWidth="899.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.network.NetworkController">
+   <left>
+      <VBox BorderPane.alignment="CENTER">
+         <children>
+            <HBox>
+               <children>
+                  <Label text="Region">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="boxRegion" prefHeight="25.0" prefWidth="133.0" promptText="Select a Region">
+                     <HBox.margin>
+                        <Insets bottom="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <Button fx:id="btnSearchStore" mnemonicParsing="false" onAction="#doSearchStoreForRegion" text="Search Stores">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnKpi" mnemonicParsing="false" onAction="#doKPIGraph" text="KPIGraph">
+                     <HBox.margin>
+                        <Insets left="60.0" top="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <ComboBox fx:id="boxDistrinct" promptText="Select a district">
+                     <HBox.margin>
+                        <Insets left="100.0" top="10.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <TextField fx:id="txtTurnover" promptText="Revenue you deserve">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="60.0" right="20.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="btnCalculate" mnemonicParsing="false" onAction="#doCalculate" text="Calculate">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label text="City">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="txtCityName" promptText="Insert the city name">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="btnStoreIn" mnemonicParsing="false" onAction="#doSearchStoreInCity" text="Search Stores in ">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <TextField fx:id="txtDistrict" editable="false" promptText="District name">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <TextField fx:id="txtId_Istat" editable="false" promptText="Id istat of the city">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="30.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <TextArea fx:id="txtResult" editable="false">
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </TextArea>
+            <HBox fx:id="storebox">
+               <children>
+                  <Label prefHeight="9.0" prefWidth="49.0" text="Store">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="id_pvd" prefHeight="25.0" prefWidth="141.0" promptText="Insert the id_pvd">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="btnCompleteStore" mnemonicParsing="false" onAction="#completeStore" prefHeight="36.0" prefWidth="82.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="40.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../punti_vendita.jpg" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnInsert" mnemonicParsing="false" onAction="#doInsert" prefHeight="36.0" prefWidth="90.0" text="Insert/Update" visible="false">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="40.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#doDelete" prefHeight="36.0" prefWidth="79.0" text="Delete Old" visible="false">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="40.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <ComboBox fx:id="boxMonth" visible="false">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="20.0" right="5.0" top="10.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <Button fx:id="btnStoreKpi" mnemonicParsing="false" onAction="#doStoreKpi" prefHeight="36.0" prefWidth="79.0" text="Store's KPI" visible="false">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="50.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <HBox fx:id="storebox" visible="false">
+               <children>
+                  <TextField fx:id="txtbrand" promptText="Insert the Business Name">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <TextField fx:id="txtiva" promptText="This is the IVA">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <TextField fx:id="citystore" prefHeight="25.0" prefWidth="152.0" promptText="City">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <TextField fx:id="addresspvd" promptText="Address">
+                     <HBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+            </HBox>
+            <Pane prefHeight="272.0" prefWidth="890.0">
+               <children>
+                  <BarChart fx:id="kpiStoreChart" layoutY="-3.0" prefHeight="272.0" prefWidth="890.0">
+                    <xAxis>
+                      <CategoryAxis side="BOTTOM" fx:id="x" />
+                    </xAxis>
+                    <yAxis>
+                      <NumberAxis fx:id="y" side="LEFT" />
+                    </yAxis>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </BarChart>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </Pane>
+         </children>
+      </VBox>
+   </left>
+</BorderPane>
