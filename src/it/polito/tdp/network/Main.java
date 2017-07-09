@@ -12,10 +12,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-<<<<<<< HEAD
 			
-=======
->>>>>>> branch 'master' of https://github.com/TdP-prove-finali/BonfiglioDelia.git
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("Network.fxml"));
 			BorderPane root = (BorderPane) loader.load();
 			NetworkController controller = loader.getController();
