@@ -13,7 +13,6 @@ import it.polito.tdp.network.model.Model;
 import it.polito.tdp.network.model.Store;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -146,7 +145,7 @@ public class NetworkController {
 	        			if(model.getNeighbours(stemp).size()!= 0){
 	        				txtResult.appendText("Neighbours of the specified store: \n");
 			        			for(Store a : model.getNeighbours(stemp))
-			        				txtResult.appendText(a.toString()+"\n");
+			        				txtResult.appendText(a.toString());
 	        			} else {
 	        				txtResult.appendText("This is the only store in the city\n");
 	        			}
@@ -193,7 +192,7 @@ public class NetworkController {
     	List<Store> stores= new ArrayList<Store>(model.getStoresForRegion(region));
 	    
 	    	for(Store stemp: stores)
-		    		txtResult.appendText(stemp.toString()+"\n");  
+		    		txtResult.appendText(stemp.toString());  
 	    System.out.println(model.getDistrinctForRegion(region));
 	    
     }
@@ -213,7 +212,7 @@ public class NetworkController {
     	List<Store> stores= new ArrayList<Store>(model.getStoresForCity(city_name));
     	if(stores.size()!=0){		
 	    	for(Store stemp: stores)
-		    		txtResult.appendText(stemp.toString()+"\n"); 
+		    		txtResult.appendText(stemp.toString()); 
 	     } else 
 	    	 txtResult.appendText("There are not shops in the city selected\n");
 	   
@@ -425,7 +424,7 @@ public class NetworkController {
     
     @FXML
     void doCalculate(ActionEvent event) {
-    	String turnover= txtTurnover.getText();
+    	String rev= txtTurnover.getText();
     	//BOX CON LE PROVINCIE DELLA REGIONE SCELTA
     	
     	String region = boxRegion.getValue();
@@ -440,9 +439,9 @@ public class NetworkController {
     	
     	try{
     		txtResult.clear();
-    		double t= Double.parseDouble(turnover);
+    		double t= Double.parseDouble(rev);
     		model.setProvincia(provincia);
-    		model.setTurnover(t);
+    		model.setrevenue(t);
     		
     		List<Store> list= model.getOrderedListOfStores();
     		if(list.size()==0){
@@ -475,7 +474,7 @@ public class NetworkController {
     			eff += s.getFatt_prod();   					
     		}
     		
-    			txtResult.appendText("The max turnover is: "+eff+"\n"); 
+    			txtResult.appendText("The max revenue is: "+eff+"\n"); 
     		} 
     		
     		else if(t < min) {
@@ -491,7 +490,7 @@ public class NetworkController {
         		for(Store s: list){
         			eff += s.getFatt_prod();    					
         		}
-        		txtResult.appendText("The max turnover is: "+eff+"\n");    			
+        		txtResult.appendText("The max revenue is: "+eff+"\n");    			
     		}
     			
     		
@@ -499,7 +498,7 @@ public class NetworkController {
     	}catch(NumberFormatException e){
     		e.printStackTrace();
     		txtResult.clear();
-    		txtResult.appendText("Please insert the turnover only with digits.\n");
+    		txtResult.appendText("Please insert the revenue only with digits.\n");
     		return;
     	}
     	

@@ -167,7 +167,11 @@ public class Store implements Comparable<Store>{
 	//}
 	
 	public String toString(){
-		return "Id store: "+id_pvd+ ", Closed to public "+this.getCommercial_state()+" revenue: "+fatt_prod+"\n";
+		if(fatt_prod>0.0)
+		return "Id store: "+id_pvd+ ", Closed to public "+this.getCommercial_state()+", Revenue: "+fatt_prod+"\n";
+	
+		return "Id store: "+id_pvd+ ", Closed to public "+this.getCommercial_state()+"\n";
+		
 	}
 
 	/**

@@ -10,7 +10,7 @@ import it.polito.tdp.network.dao.NetworkDAO;
 
 
 public class Model {
-	private double turnover;
+	private double revenue;
 	private List<City> cities;
 	private List<Store> stores;
 	private CityIdMap cityIdMap;
@@ -30,7 +30,7 @@ public class Model {
 		stores = new ArrayList<Store>();
 		cityIdMap= new CityIdMap();
 		storeIdMap = new StoreIdMap();
-		this.turnover=0.0;
+		this.revenue=0.0;
 	}
 
 	public List<City> getCityList(){
@@ -189,7 +189,7 @@ public class Model {
 		best = new LinkedHashSet<Store>();
 		orderedList = this.getOrderedListOfStores();
 		
-		delta = turnover;
+		delta = revenue;
 		//System.out.println(orderedList.size()+"\n");
 		
 		effMax = orderedList.get(orderedList.size()-1).getEfficiency_index();
@@ -205,19 +205,19 @@ public class Model {
 		
 		System.out.println(parziale.toString());
 				
-		//cond terminazione: peso uguale o minore del turnover
+		//cond terminazione: peso uguale o minore del revenue
 		double weight = weight(parziale);
 		
-		if(weight == turnover){
+		if(weight == revenue){
 			best.clear();
 			best.addAll(parziale);	
 			return;
 		}
 		
-		if( weight < turnover ){
-			double diff = turnover- weight;
+		if( weight < revenue ){
+			double diff = revenue- weight;
 			
-		// max capillarita e minima differenza rispetto al turnover desiderato			
+		// max capillarita e minima differenza rispetto al revenue desiderato			
 			if( diff < delta && parziale.size()> best.size()){
 				delta = diff;
 				best.clear();
@@ -234,15 +234,15 @@ public class Model {
 			best.addAll(parziale);
 			
 			return;
-		}
+		}		
 		
 		for(Store stemp: orderedList){
 				//ottimizzo in modo da evitare le permutazioni dei negozi che occupa solo tempo alla ricorsione
 			
 			if(!parziale.contains(stemp) && stemp.getEfficiency_index() > precedente.getEfficiency_index()){
 					
-				//aggiungo un filtro per cui se il peso di parziale a cui aggiungo il nuovo negozio supera il turnoverlo ignora
-				if(weight(parziale)+ stemp.getFatt_prod() <= turnover){
+				//aggiungo un filtro per cui se il peso di parziale a cui aggiungo il nuovo negozio supera il revenuelo ignora
+				if(weight(parziale)+ stemp.getFatt_prod() <= revenue){
 					parziale.add(stemp);
 					choose(parziale, step+1, stemp);					
 					parziale.remove(stemp);
@@ -328,9 +328,9 @@ public class Model {
 		return tot; 
 	}
 
-	public void setTurnover(double turnover2) {
+	public void setrevenue(double revenue2) {
 
-		this.turnover= turnover2;
+		this.revenue= revenue2;
 	}
 
 	public void setProvincia(String provincia) {

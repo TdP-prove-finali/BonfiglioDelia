@@ -11,7 +11,6 @@ import it.polito.tdp.network.model.City;
 import it.polito.tdp.network.model.CityIdMap;
 import it.polito.tdp.network.model.Store;
 import it.polito.tdp.network.model.StoreIdMap;
-import javafx.scene.control.TextField;
 
 public class NetworkDAO {
 
@@ -220,9 +219,9 @@ public class NetworkDAO {
 
 	public boolean remove(Store s, StoreIdMap storeIdMap) {
 		
-		final String sql = "DELETE "+
-							"FROM network "+
-							"WHERE id_pvd = ? ";
+		final String sql = "delete e.*, n.* "+
+							"from economics as e, network as n "+
+							"where n.id_pvd=e.id_pvd and e.id_pvd=? ";
 
 		try {
 		Connection conn = DBConnect.getConnection();
@@ -453,10 +452,9 @@ public class NetworkDAO {
 	public List<Store> getStoresForDistrinct(String provincia, StoreIdMap storeIdMap) {
 		final String sql = "select n.*"+
 				"from network as n, cities as c "+
-				"where c.id_istat=n.id_istat and c.district_name= ?";
+				"where c.id_istat=n.id_istat and c.district_name= ? and n.comm_state='no' ";
 
 		List<Store> stores= new ArrayList<Store>();
-
 		try {
 		Connection conn = DBConnect.getConnection();
 		PreparedStatement st = conn.prepareStatement(sql);
